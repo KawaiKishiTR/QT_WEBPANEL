@@ -21,9 +21,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QNetworkAccessManager *networkManager;
-
-    void handleReply(QNetworkReply *reply);
-    QNetworkRequest createRequest(QString action);
+    QNetworkAccessManager *_netManager;
 };
 #endif // MAINWINDOW_H

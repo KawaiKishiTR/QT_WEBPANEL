@@ -15,13 +15,15 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
 
 set(PROJECT_SOURCES
-        src/main.cpp
+    include/config.h
+    include/mainwindow.h
+    include/server_api.h
 
-        include/mainwindow.h
+    ui/mainwindow.ui
 
-        ui/mainwindow.ui
-        
-        src/mainwindow.cpp
+    src/config.cpp
+    src/main.cpp
+    src/mainwindow.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
