@@ -1,0 +1,79 @@
+name: Windows Build & Package
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Manuel olarak Actions sekmesinden tetiklemek için
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Kodu Klonla (Checkout)
+        uses: actions/checkout@v4
+
+      # 1. Temiz ve standart Python 3.11 ortamı
+      - name: Python Ortamını Hazırla
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 2. Ninja kurulumu
+      - name: Ninja Kurulumu
+        run: choco install ninja
+
+      # 3. MSVC Derleyici ortamını yükle
+      - name: MSVC Derleyici Ortamını Hazırla
+        uses: ilammy/msvc-dev-cmd@v1
+
+      # 4. aqtinstall'ı doğrudan kurup resmi Qt 6.8.0 sürümünü indiriyoruz
+      - name: Qt Kurulumu (Manuel aqtinstall)
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip aqtinstall
+          
+          # Qt 6.8.0 Windows MSVC 2022 C++ paketlerini indir
+          python -m aqt install-qt windows desktop 6.8.0 win64_msvc2022_64 --outputdir C:\Qt
+          
+          # CMake ve sistemin Qt'yi bulabilmesi için ortam değişkenlerini ayarla
+          $qtPath = "C:\Qt\6.8.0\msvc2022_64"
+          echo "CMAKE_PREFIX_PATH=$qtPath" >> $env:GITHUB_ENV
+          echo "$qtPath\bin" >> $env:GITHUB_PATH
+      - name: CMake Yapılandırması (Configure)
+        run: |
+          cmake -B build -G "Ninja" `
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Projeyi Derle (Build)
+        run: |
+          cmake --build build --config Release
+
+      - name: Bağımlılıkları Topla (windeployqt)
+        run: |
+          mkdir dist
+          # .exe dosyasını nerede olursa olsun bulup kopyalar:
+          $exePath = (Get-ChildItem -Path build -Filter "QT_WEBPANEL.exe" -Recurse).FullName
+          Copy-Item $exePath dist\
+          
+          # Qt DLL'lerini dist klasörüne toplar
+          # Gereksiz ağır bileşenleri (OpenGL, D3D, SVG, translations, compiler) hariç tut:
+          windeployqt --release `
+            --no-translations `
+            --no-system-d3d-compiler `
+            --no-opengl-sw `
+            --no-compiler-runtime `
+            --no-svg `
+            dist\QT_WEBPANEL.exe
+
+          # Varsa arta kalan gereksiz klasörleri temizle
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist\generic
+
+      - name: İndirilebilir Paket Olarak Yükle (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: QT_WEBPANEL-Windows
+          path: dist/
+          retention-days: 14
