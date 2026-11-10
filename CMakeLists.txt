@@ -11,19 +11,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Network WebSockets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Network WebSockets)
 
 set(PROJECT_SOURCES
-    include/config.h
-    include/mainwindow.h
-    include/server_api.h
+    include/mainwindow.h            src/mainwindow.cpp          ui/mainwindow.ui
+    include/authdialog.h            src/authdialog.cpp          ui/authdialog.ui
+    include/starterwindow.h         src/starterwindow.cpp       ui/starterwindow.ui
 
-    ui/mainwindow.ui
-
-    src/config.cpp
+    include/common/config.h         src/common/config.cpp
+    include/common/KTokenM.h        src/common/KTokenM.cpp
+    include/common/KServerAPI.h     src/common/KServerAPI.cpp
+    include/common/KNetworkM.h
+    
     src/main.cpp
-    src/mainwindow.cpp
+    
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -60,6 +62,7 @@ endif()
 target_link_libraries(QT_WEBPANEL PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::WebSockets
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

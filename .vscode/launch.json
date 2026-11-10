@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "name": "QT_WEBPANEL Başlat",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/QT_WEBPANEL",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/build",
+        "environment": [
+            {
+                "name": "LAUNCHED_BY",
+                "value": "917f74eee56d2e89d67066768bef577de011586d33e563ad3cb59864374a1406"
+            }
+        ],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "visualizerFile": "/home/kawaikishi/.config/Code - Insiders/User/workspaceStorage/2a357ef4bb82cfe6a86a80f9bf00ff52/tonka3000.qtvsctools/qt.natvis.xml"
+    }
+]
+}

@@ -1,4 +1,5 @@
-#include "config.h"
+#include "common/config.h"
+#include <iostream>
 
 
 namespace Config {
@@ -27,9 +28,10 @@ bool saveBinaryConfig() {
 
     out << get_config_magic();
 
-    out << APP_CONFIG.SERVER_HOST;
-    out << APP_CONFIG.SERVER_PORT;
-    out << APP_CONFIG.API_KEY;
+    out << AppConfig.SERVER_HOST;
+    out << AppConfig.SERVER_PORT;
+    out << AppConfig.API_KEY;
+    out << AppConfig.FAVICON;
     
     file.close();
     return true;
@@ -55,9 +57,10 @@ QFile file(get_config_file());
         return false;
     }
 
-    in >> APP_CONFIG.SERVER_HOST;
-    in >> APP_CONFIG.SERVER_PORT;
-    in >> APP_CONFIG.API_KEY;
+    in >> AppConfig.SERVER_HOST;
+    in >> AppConfig.SERVER_PORT;
+    in >> AppConfig.API_KEY;
+    in >> AppConfig.FAVICON;
 
     file.close();
     return true;
