@@ -67,6 +67,23 @@ jobs:
             --no-compiler-runtime `
             --no-svg `
             dist\QT_WEBPANEL.exe
+          
+          # --- GEREKSİZ FAZLALIKLARI TEMİZLE ---
+          # 1. Dev DirectX/Shader derleyicileri (~40 MB)
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\dxcompiler.dll
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\dxil.dll
+
+          # 2. Kullanılmayan imaj formatları ve ağ eklentileri
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\imageformats\qgif.dll
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\imageformats\qjpeg.dll
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist\networkinformation
+
+          # 3. Fazlalık sertifika ve genel modüller
+          Remove-Item -Force -ErrorAction SilentlyContinue dist\tls\qcertonlybackend.dll
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist\generic
+          
+          # Varsa arta kalan gereksiz klasörleri temizle
+          Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist\generic
 
           # Varsa arta kalan gereksiz klasörleri temizle
           Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist\generic

@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     , _netManager(new QNetworkAccessManager(this))
 {
     ui->setupUi(this);
+    this->setWindowTitle("Devoilers Server Webpanel (" + KTokenM::get_token_name() + ") olarak giriş yapıldı.");
     setupUI();
     drawFavicon(Config::AppConfig.FAVICON, ui->lblServerIco); // cached favico
     connect_buttons();
